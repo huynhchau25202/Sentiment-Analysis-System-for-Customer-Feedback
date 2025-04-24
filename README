@@ -1,0 +1,61 @@
+# AI-powered Sentiment Analysis System for Customer Feedback
+
+## Giới thiệu
+Hệ thống phân tích cảm xúc (Sentiment Analysis) sử dụng mô hình **DistilBERT** để dự đoán cảm xúc từ các phản hồi của khách hàng. Mô hình phân loại cảm xúc phản hồi thành ba nhãn: **negative**, **neutral**, và **positive**.
+
+Hệ thống được xây dựng bằng **Streamlit** và sử dụng **Transformers** của Hugging Face để tải mô hình và tokenizer.
+
+## Mô hình sử dụng
+### DistilBERT
+- **DistilBERT** là một phiên bản rút gọn của mô hình **BERT** (Bidirectional Encoder Representations from Transformers). Nó giảm thiểu số lượng tham số và tốc độ tính toán, nhưng vẫn giữ lại hầu hết hiệu suất của BERT.
+- Mô hình DistilBERT đã được fine-tuned cho tác vụ phân loại văn bản, và nó được sử dụng để dự đoán cảm xúc trong phản hồi của khách hàng.
+
+### Các bước huấn luyện mô hình
+1. **Chuẩn bị dữ liệu**: Dữ liệu bao gồm các phản hồi của khách hàng từ **tập dữ liệu Shopee**. Mỗi phản hồi được gắn nhãn cảm xúc tương ứng (negative, neutral, positive) dựa trên điểm đánh giá của khách hàng.
+2. **Tiền xử lý dữ liệu**: Dữ liệu đầu vào được làm sạch bằng cách loại bỏ liên kết, ký tự đặc biệt và chuẩn hóa chữ viết (thành chữ thường).
+3. **Huấn luyện mô hình**: Sử dụng mô hình **DistilBERT** được fine-tuned với bộ dữ liệu này. Các siêu tham số huấn luyện bao gồm learning rate là `2e-5`, batch size là `256`, và huấn luyện trong 3 epoch.
+4. **Lưu trữ mô hình**: Sau khi huấn luyện, mô hình và tokenizer đã được lưu lại và có thể tải lại để dự đoán.
+
+## Tập dữ liệu
+Tập dữ liệu được sử dụng cho mô hình phân tích cảm xúc này là từ **tập dữ liệu đánh giá Shopee**:
+- **Tập dữ liệu gồm**:
+  - `content`: Nội dung của phản hồi khách hàng.
+  - `score`: Điểm đánh giá của khách hàng (từ 1 đến 5).
+  ...
+### Quy trình xử lý dữ liệu:
+1. Dữ liệu được làm sạch (xóa liên kết, ký tự đặc biệt, chuyển về chữ thường).
+2. Nhãn cảm xúc được tạo ra từ điểm đánh giá:
+   - Điểm đánh giá từ 1-2: `negative`
+   - Điểm đánh giá bằng 3: `neutral`
+   - Điểm đánh giá từ 4-5: `positive`
+3. Sau khi tiền xử lý, dữ liệu được chia thành tập huấn luyện (80%) và tập kiểm tra (20%).
+
+## Cấu trúc thư mục
+sentiment-analysis-app/
+├── app/
+│   ├── ui.py           
+│   └── utils.py                  
+├── [sentiment_analysis_app.py] # Ứng dụng Streamlit
+├── [Untitled2.ipynb]           # Notebook huấn luyện mô hình
+├── model/                      # Thư mục chứa mô hình và tokenizer
+│   ├── bert_tokenizer/         # Tokenizer đã lưu
+│   └── sentiment_model/        # Mô hình đã fine-tuned
+├── [requirements.txt]          # Danh sách thư viện cần thiết
+├── README.md                   # Tài liệu dự án
+
+
+## Hướng dẫn sử dụng
+. Tạo môi trường ảo:
+   python3 -m venv env
+   source env/bin/activate  # Trên Linux/MacOS
+   .\env\Scripts\activate   # Trên Windows
+2. Cài đặt các thư viện cần thiết:
+   pip install -r requirements.txt
+3. Chạy ứng dụng Streamlit:
+   streamlit run sentiment_analysis_app.py
+4. Truy cập vào địa chỉ http://localhost:8501 để sử dụng ứng dụng.
+## Tính năng
+- Nhập phản hồi của khách hàng vào ô văn bản.
+- Nhấn nút "Phân tích" để mô hình dự đoán cảm xúc của phản hồi.
+- Kết quả sẽ hiển thị cảm xúc dự đoán (negative, neutral, positive) cùng với xác suất tương ứng.
+- Giao diện thân thiện và dễ sử dụng.
